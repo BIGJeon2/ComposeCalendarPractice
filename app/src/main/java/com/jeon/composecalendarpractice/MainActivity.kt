@@ -1,6 +1,7 @@
 package com.jeon.composecalendarpractice
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -8,7 +9,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
@@ -58,7 +59,7 @@ private fun CalenderPractice(){
         CalenderHeader(time)
         CalendarHeaderBtn(time)
         CalendarDayName(time)
-        CalendarBody(time)
+        CalendarDayList(time)
     }
 
 }
@@ -147,7 +148,49 @@ private fun CalendarDayName(date: MutableState<Calendar>){
 }
 
 @Composable
-private fun CalendarBody(date: MutableState<Calendar>){
+private fun CalendarDayList(date: MutableState<Calendar>){
+    //달력 그리는 공식 -> JetPack Compose로 달력 모양 그리는 방법
+    date.value.set(Calendar.DAY_OF_MONTH, 1)
+
+    val monthDayMax = date.value.getActualMaximum(Calendar.DAY_OF_MONTH)
+    val monthFirstDay = date.value.get(Calendar.DAY_OF_WEEK) - 1
+    val monthWeeksCount = (monthDayMax + monthFirstDay + 6) / 7
+
+    Log.d("monthDayMax", monthDayMax.toString())
+    Log.d("monthFirstDay", monthFirstDay.toString())
+    Log.d("monthWeeksCount", monthWeeksCount.toString())
+
+    Column(
+
+    ) {
+        repeat(monthWeeksCount) {week ->
+            Row(
+
+            ) {
+                repeat(7) { day ->
+                    //날짜 구하는 공식
+                    val resultDay = week * 7 + day - monthFirstDay + 1
+
+                    if (resultDay in 1 .. monthDayMax) {
+                        Box(
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(10.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = resultDay.toString(),
+                                color = Color.Black,
+                                fontSize = 15.sp
+                            )
+                        }
+                    }else{
+                        Spacer(modifier = Modifier.weight(1f))
+                    }
+                }
+            }
+        }
+    }
 
 }
 
